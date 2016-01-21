@@ -2,12 +2,6 @@ tag:
 type: txt
 help: interface(s) to listen on
 
-allowed: local -a vals;
-         vals=($(/usr/sbin/ubnt-ifctl list-sys-intfs ethernet));
-         vals+=($(/usr/sbin/ubnt-ifctl list-sys-intfs switch));
-         vals+=($(/usr/sbin/ubnt-ifctl list-sys-intfs bridge));
-         vals+=($(/usr/sbin/ubnt-ifctl list-sys-intfs bonding));
-         vals+=($(/usr/sbin/ubnt-ifctl list-sys-intfs vif));
-         echo ${vals[@]};
+allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=all
 
 
