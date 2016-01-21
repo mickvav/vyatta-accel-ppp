@@ -1,2 +1,2 @@
 type: txt
-help: TODO
+help: Specifies mpu parameter of tbf qdisc and policer.

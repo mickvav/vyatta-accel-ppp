@@ -1,2 +1,2 @@
-type: txt
-help: TODO
+type: u32
+help: Due to accel-ppp operates with rates in kilobit basis if you send rates in different basis then you can use this option to bring your values to kilobits.

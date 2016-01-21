@@ -1,2 +1,2 @@
 type: txt
-help: TODO
+help: Specifies which radius attributes contains rate information for downstream.

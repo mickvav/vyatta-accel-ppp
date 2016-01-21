@@ -1,2 +1,2 @@
-type: txt
-help: TODO
+type: u32
+help: Specifies latency (in miliseconds) parameter of tbf qdisc.

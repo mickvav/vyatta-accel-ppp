@@ -78,6 +78,7 @@ my %fields = (
 	_shaper				=> undef,
 	_shaper_vendor			=> undef,
 	_shaper_attr			=> undef,
+	_shaper_enabled			=> undef,
 	_shaper_attr_down		=> undef,
 	_shaper_attr_up			=> undef,
 	_shaper_burst_factor		=> undef,
@@ -88,12 +89,10 @@ my %fields = (
 	_shaper_mtu			=> undef,
 	_shaper_r2q			=> undef,
 	_shaper_quantum			=> undef,
-	_shaper_cburst			=> undef,
 	_shaper_up_limiter		=> undef,
 	_shaper_down_limiter		=> undef,
 	_shaper_leaf_qdisc		=> undef,
 	_shaper_rate_multiplier		=> undef,
-	_shaper_ifb			=> undef,
 	_shaper_time_range		=> undef,
 	_shaper_verbose			=> undef,
 	_is_empty			=> 1,
@@ -198,6 +197,7 @@ sub setup_base {
 		$self->{_shaper}			= 1;
 		$self->{_shaper_vendor}			= $config->$val_func('shaper vendor');
 		$self->{_shaper_attr}			= $config->$val_func('shaper attr');
+		$self->{_shaper_enabled}		= $config->$val_func('shaper enabled');
 		$self->{_shaper_attr_down}		= $config->$val_func('shaper attr-down');
 		$self->{_shaper_attr_up}		= $config->$val_func('shaper attr-up');
 		$self->{_shaper_burst_factor}		= $config->$val_func('shaper burst-factor');
@@ -208,13 +208,10 @@ sub setup_base {
 		$self->{_shaper_mtu}			= $config->$val_func('shaper mtu');
 		$self->{_shaper_r2q}			= $config->$val_func('shaper r2q');
 		$self->{_shaper_quantum}		= $config->$val_func('shaper quantum');
-		$self->{_shaper_cburst}			= $config->$val_func('shaper cburst');
 		$self->{_shaper_up_limiter}		= $config->$val_func('shaper up-limiter');
 		$self->{_shaper_down_limiter}		= $config->$val_func('shaper down-limiter');
 		$self->{_shaper_leaf_qdisc}		= $config->$val_func('shaper leaf-qdisc');
 		$self->{_shaper_rate_multiplier}	= $config->$val_func('shaper rate-multiplier');
-		$self->{_shaper_ifb}			= $config->$val_func('shaper ifb');
-		$self->{_shaper_time_range}		= $config->$val_func('shaper time-range');
 		$self->{_shaper_verbose}		= $config->$val_func('shaper verbose');
 	}
 	if (defined($config->$vals_func('ip_pool'))) {
@@ -603,7 +600,7 @@ sub get_ppp_opts {
 		$config .= "\n";
 	}
 
-	if (defined($self->{_shaper})) {
+	if (defined($self->{_shaper}) and ( not(defined($self->{_shaper_enabled}) or $self->{_shaper_enabled} eq 'true') )) {
 		return (undef, "Must specify upstream rate limiting method.")
 			if ! defined $self->{_shaper_up_limiter};
 
@@ -671,10 +668,6 @@ sub get_ppp_opts {
 			$config .= "quantum=$self->{_shaper_quantum}\n";
 		}
 
-		if (defined($self->{_shaper_cburst})) {
-			$config .= "cburst=$self->{_shaper_cburst}\n";
-		}
-
 		if (defined($self->{_shaper_up_limiter})) {
 			$config .= "up-limiter=$self->{_shaper_up_limiter}\n";
 		}
@@ -689,14 +682,6 @@ sub get_ppp_opts {
 
 		if (defined($self->{_shaper_rate_multiplier})) {
 			$config .= "rate-multiplier=$self->{_shaper_rate_multiplier}\n";
-		}
-
-		if (defined($self->{_shaper_ifb})) {
-			$config .= "ifb=$self->{_shaper_ifb}\n";
-		}
-
-		if (defined($self->{_shaper_time_range})) {
-			$config .= "time-range=$self->{_shaper_time_range}\n";
 		}
 
 		if (defined($self->{_shaper_verbose})) {

@@ -1,2 +1,2 @@
-type: txt
-help: TODO
+type: u32
+help: MTU which will be negotiated if client's MRU will be not acceptable.

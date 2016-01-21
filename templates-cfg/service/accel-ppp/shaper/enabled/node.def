@@ -1,0 +1,2 @@
+type: bool
+help: false - disables shaper at all.

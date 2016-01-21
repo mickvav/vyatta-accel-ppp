@@ -1,2 +1,2 @@
-type: txt
-help: TODO
+type: u32
+help: Specifies r2q parameter of root htb qdisc.

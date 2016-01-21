@@ -1,2 +1,2 @@
-type: txt
-help: TODO
+type: u32
+help: Specifies burst factor for upstream.
