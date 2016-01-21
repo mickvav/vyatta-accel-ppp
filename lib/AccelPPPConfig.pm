@@ -705,7 +705,16 @@ sub get_ppp_opts {
 
 sub removeCfg {
     my ($self, $file) = @_;
-
+    if ( ! -f "$file" ) {
+       print STDERR "accel-ppp configuration problem: file $file not found!\n";
+       print STDERR "Trying to create new:\n";
+       system("touch $file");
+       if ( ! -f "$file" ) {
+          print STDERR "Failed. I give up\n";
+          return 0;
+       };
+       return 1;
+    };
     system("sed -i '/$cfg_delim_begin/,/$cfg_delim_end/d' $file");
     if ($? >> 8) {
         print STDERR 
