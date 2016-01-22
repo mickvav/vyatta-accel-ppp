@@ -41,6 +41,7 @@ exit 1 if (!$config->removeCfg($FILE_PPPOE_CFG));
 exit 1 if (!$config->writeCfg($FILE_PPPOE_CFG, $pppoe_conf, 0, 0));
 
 if ($config->needsReload($oconfig)) {
+        $config->pushReload($oconfig);
 	system('/usr/bin/accel-cmd reload');
 	exit 0;
 }

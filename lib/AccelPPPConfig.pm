@@ -12,6 +12,7 @@ my $cfg_delim_end = '### Vyatta Accel PPPoE End ###';
 # GLOBAL
 # PPPOE
 # PPP OPTIONS
+my $accelcmd="/usr/bin/accel_cmd";
 my %fields = (
 	_global_dns1			=> undef,
 	_global_dns2			=> undef,
@@ -290,26 +291,74 @@ sub needsReload {
 
 	return 0 if ($this->{_is_empty} ne $that->{_is_empty});
 
+	return 1 if ($this->{_pppoe_ac} ne $that->{_pppoe_ac});
+	return 1 if ($this->{_pppoe_service} ne $that->{_pppoe_service});
 	return 1 if ($this->{_global_dns1} ne $that->{_global_dns1});
 	return 1 if ($this->{_global_dns2} ne $that->{_global_dns2});
 	return 1 if ($this->{_global_wins1} ne $that->{_global_wins1});
 	return 1 if ($this->{_global_wins2} ne $that->{_global_wins2});
+	return 1 if (listsDiff($this->{_pppoe_intfs}, $that->{_pppoe_intfs}));
 
 	return 0;
-}
+};
+
+sub pushReload {
+	my ($this, $that) = @_;
+	if (listsDiff($this->{_pppoe_intfs}, $that->{_pppoe_intfs})) {
+            my %thathash=();
+            foreach my $if ( @{ $that->{_pppoe_intfs}} ) {
+               $thathash{$if}=1;
+            };
+            my %thishash=();
+            foreach my $if ( @{ $this->{_pppoe_intfs}} ) {
+               $thishash{$if}=1;
+               if(defined($thathash{$if})) {
+                  $thishash{$if}=0;
+                  $thathash{$if}=0;
+               };
+            };
+            foreach my $if ( keys(%thathash) ) {
+               if(defined($thishash{$if})) {
+                  $thishash{$if}=0;
+                  $thathash{$if}=0;
+               };
+            };
+
+            foreach my $if ( keys(%thathash)) {
+               if($thathash{$if}) { ### Needs to be removed
+                   my $rc=system("$accelcmd pppoe interface del $if");
+                   if($rc != 0) { return 0 ;};
+               };
+            };
+            foreach my $if ( keys(%thishash)) {
+               if($thishash{$if}) { ### Needs to be added
+                   my $rc=system("$accelcmd pppoe interface add $if");
+                   if($rc != 0) { return 0; };
+               };
+            };
+        };
+        my %pars = ( _pppoe_ac => 'AC-Name',
+                     _pppoe_service => 'Service-Name',
+                     _pppoe_verbose => 'verbose' );
+        foreach my $key (keys(%pars)) {
+	  if ($this->{$key} ne $that->{$key}) {
+            my $rc=system("$accelcmd pppoe set ".$pars{$key}." ".$this->{$key});
+            if($rc != 0) { print STDERR "Can't set ".$pars{$key}."\n";return 0; };
+          };
+        };
+
+	return 1;
+};
 
 sub needsRestart {
 	 my ($this, $that) = @_;
 
 	return 1 if ($this->{_is_empty} ne $that->{_is_empty});
 
-	return 1 if ($this->{_pppoe_ac} ne $that->{_pppoe_ac});
-	return 1 if ($this->{_pppoe_service} ne $that->{_pppoe_service});
 	return 1 if ($this->{_pppoe_mtu} ne $that->{_pppoe_mtu});
 
 	return 1 if ($this->{_radius_nas_ip_address} ne $that->{_radius_nas_ip_address});
 
-	return 1 if (listsDiff($this->{_pppoe_intfs}, $that->{_pppoe_intfs}));
 	return 1 if (listsDiff($this->{_radius_servers}, $that->{_radius_servers}));
 
 	return 0;
