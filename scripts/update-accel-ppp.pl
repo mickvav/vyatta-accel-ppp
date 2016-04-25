@@ -111,8 +111,31 @@ case "$1" in
 esac
 
 exit 0';
-close(FD);
-chmod(0755,'/etc/init.d/accel-ppp');
+       close(FD);
+       chmod(0755,'/etc/init.d/accel-ppp-init');
+       if( -d '/etc/systemd/system') {
+         if ( ! -f '/etc/systemd/system/accel-ppp-init.service') {
+            open(FD, '>/etc/systemd/system/accel-ppp-init.service') or exit(1);
+            print FD '[Unit]
+Description=Accel-pppd accelerated ppp server
+After=network.target
+ConditionPathExists=/etc/accel-ppp.conf
+
+[Service]
+EnvironmentFile=-/etc/default/accel-ppp
+ExecStart=/usr/sbin/accel-pppd -c /etc/accel-ppp.conf -d
+ExecReload=/usr/bin/accel-cmd reload
+ExecStop=/usr/bin/killall -9 accel-pppd
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=accel-ppp.service ';
+            close(FD);
+            chmod(0755,'/etc/systemd/system/accel-ppp-init.service');
+            };
+          };
         };
 	system('/usr/sbin/invoke-rc.d accel-ppp stop');
 	my $rc = system('/usr/sbin/invoke-rc.d accel-ppp start');

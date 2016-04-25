@@ -1,6 +1,10 @@
 This package was debianized by Cesar fazan <cesar.fazan@gmail.com> on
 Sat, 17 Aug 2013.
 
+Later it was adapted to VyOS and fixed to work with recent accel-ppp 
+by Mihail Vasilev <mick@corp.linkintel.ru> on
+Mon, 25 Apr 2016.
+
 It's original content from the GIT repository 
    <https://github.com/SO3Group/vyatta-dummy>
 

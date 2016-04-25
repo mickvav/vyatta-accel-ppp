@@ -428,19 +428,29 @@ sub get_ppp_opts {
 
 		if (defined($self->{_log_file})) {
 			$config .= "log-file=$self->{_log_file}\n";
-		}
+		} else {
+                        $config .= "log-file=/var/log/accel-ppp/accel-ppp.log\n";
+                };
 		if (defined($self->{_log_emerg})) {
 			$config .= "log-emerg=$self->{_log_emerg}\n";
-		}
+		} else {
+                        $config .= "log-emerg=/var/log/accel-ppp/emerg.log\n";
+                };
 		if (defined($self->{_log_fail})) {
 			$config .= "log-fail-file=$self->{_log_fail}\n";
-		}
+		} else {
+                        $config .= "log-fail-file=/var/log/accel-ppp/auth-fail.log\n";
+                };
 		if (defined($self->{_log_level})) {
 			$config .= "level=$self->{_log_level}\n";
-		}
+		} else {
+                        $config .= "level=3\n";
+                };
 		if (defined($self->{_log_copy})) {
 			$config .= "copy=$self->{_log_copy}\n";
-		}
+		} else {
+                        $config .= "copy=1\n";
+                };
 		if (defined($self->{_log_per_sess_dir})) {
 			$config .= "per-session-dir=$self->{_log_per_sess_dir}\n";
 		}

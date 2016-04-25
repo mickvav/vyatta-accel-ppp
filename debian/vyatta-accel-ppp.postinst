@@ -1,0 +1,6 @@
+#!/bin/bash
+
+logdir=/var/log/accel-ppp
+if [ ! -d "$logdir" ]; then
+    mkdir $logdir
+fi
