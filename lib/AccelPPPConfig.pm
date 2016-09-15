@@ -481,8 +481,8 @@ sub get_ppp_opts {
 		}
 		if (defined($self->{_pppoe_service})) {
 			$config .= "service-name=$self->{_pppoe_service}\n";
-		} else {
-			$config .= "service-name=*\n";
+#		} else {
+#			$config .= "service-name=*\n";     
 		}
 		if (defined($self->{_pppoe_pado_delay})) {
 			$config .= "pado-delay=$self->{_pppoe_pado_delay}\n";
