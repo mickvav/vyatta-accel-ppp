@@ -49,8 +49,15 @@ elsif ($config->needsRestart($oconfig)) {
 	# restart accel-ppp
 	# We can use accel-cmd reload|restart to not disconnect clients
 	# So far its not working need to investigate
+        my $init_mode='sysv';
+        if(-d '/etc/systemd/system') {
+           $init_mode='systemd';
+        };
 	system("echo 'ACCEL_PPPD_OPTS=\"-c /etc/accel-ppp.conf\"' > /etc/default/accel-ppp");
-        if ( ! -f '/etc/init.d/accel-ppp-init' ) {
+        my $rc;
+        if ($init_mode eq 'sysv') {
+# System V
+         if ( ! -f '/etc/init.d/accel-ppp-init') {
            open(FD,'>/etc/init.d/accel-ppp-init') or exit 1;
            print FD '#!/bin/sh
 # /etc/init.d/accel-pppd: set up the accel-ppp server
@@ -111,9 +118,13 @@ case "$1" in
 esac
 
 exit 0';
-       close(FD);
-       chmod(0755,'/etc/init.d/accel-ppp-init');
-       if( -d '/etc/systemd/system') {
+         close(FD);
+         chmod(0755,'/etc/init.d/accel-ppp-init');
+         };
+	 system('/usr/sbin/invoke-rc.d accel-ppp stop');
+	 $rc = system('/usr/sbin/invoke-rc.d accel-ppp start');
+        } else {
+### Systemd
          if ( ! -f '/etc/systemd/system/accel-ppp-init.service') {
             open(FD, '>/etc/systemd/system/accel-ppp-init.service') or exit(1);
             print FD '[Unit]
@@ -128,17 +139,18 @@ ExecReload=/usr/bin/accel-cmd reload
 ExecStop=/usr/bin/killall -9 accel-pppd
 KillMode=process
 Restart=on-failure
+Type=forking
 
 [Install]
 WantedBy=multi-user.target
 Alias=accel-ppp.service ';
             close(FD);
             chmod(0755,'/etc/systemd/system/accel-ppp-init.service');
+            $rc = system('/bin/systemctl enable accel-ppp-init');
+            
             };
-          };
+          
         };
-	system('/usr/sbin/invoke-rc.d accel-ppp stop');
-	my $rc = system('/usr/sbin/invoke-rc.d accel-ppp start');
 	exit $rc;
 }
 exit 0;
