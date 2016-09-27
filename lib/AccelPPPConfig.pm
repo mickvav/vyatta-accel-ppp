@@ -678,7 +678,7 @@ sub get_ppp_opts {
 
         if(defined($self->{_pppd_compat})) {
                 $config .= "[pppd-compat]\n";
-                $loadmodules. .= "pppd_compat\n";
+                $loadmodules .= "pppd_compat\n";
                 if(defined($self->{_pppd_compat_ip_change})) {
                    $config .= "ip-change=".$self->{_pppd_compat_ip_change}; 
                 };
