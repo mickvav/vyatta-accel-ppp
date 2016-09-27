@@ -1,0 +1,4 @@
+type: txt
+help: Path to ip-down script which is executed when session  is about to terminate.
+syntax:expression: exec "[ -x $VAR(@) ]" ; "Script should exist and be executable by root."
+

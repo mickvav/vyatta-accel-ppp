@@ -1,0 +1,8 @@
+type: u32
+
+help: If  specified and greated then zero pppd_module will produce verbose logging.
+
+syntax:expression: $VAR(@) >= 0 && $VAR(@) <=1;
+                   "Must be 0 for disabled or 1 for enabled"
+
+val_help: u32:0-1; Verbose logging 0 for disabled or 1 for enabled

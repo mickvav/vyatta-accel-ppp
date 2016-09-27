@@ -96,6 +96,13 @@ my %fields = (
 	_shaper_rate_multiplier		=> undef,
 	_shaper_time_range		=> undef,
 	_shaper_verbose			=> undef,
+        _pppd_compat                    => undef,
+        _pppd_compat_ip_change          => undef,
+        _pppd_compat_ip_down            => undef,
+        _pppd_compat_ip_pre_up          => undef,
+        _pppd_compat_ip_up              => undef,
+        _pppd_compat_radattr            => undef,
+        _pppd_compat_verbose            => undef,
 	_is_empty			=> 1,
 );
 
@@ -193,7 +200,17 @@ sub setup_base {
 			$self->{_radius_servers} = [ @{$self->{_radius_servers}}, $rserver];
 		}
 	}
+  
+        if (defined($config->$vals_func('pppd_compat'))) {
+                $self->{_pppd_compat}                   = 1;
+                $self->{_pppd_compat_ip_change}         => $config->$val_func('pppd-compat ip-change'),
+                $self->{_pppd_compat_ip_down}           => $config->$val_func('pppd-compat ip-down');
+                $self->{_pppd_compat_ip_pre_up}         => $config->$val_func('pppd-compat ip-pre-up');
+                $self->{_pppd_compat_ip_up}             => $config->$val_func('pppd-compat ip-up');
+                $self->{_pppd_compat_radattr}           => $config->$val_func('pppd-compat radattr');
+                $self->{_pppd_compat_verbose}           => $config->$val_func('pppd-compat verbose');
 
+        };
 	if (defined($config->$vals_func('shaper'))) {
 		$self->{_shaper}			= 1;
 		$self->{_shaper_vendor}			= $config->$val_func('shaper vendor');
@@ -658,6 +675,30 @@ sub get_ppp_opts {
 		}
 		$config .= "\n";
 	}
+
+        if(defined($self->{_pppd_compat})) {
+                $config .= "[pppd-compat]\n";
+                $loadmodules. .= "pppd_compat\n";
+                if(defined($self->{_pppd_compat_ip_change})) {
+                   $config .= "ip-change=".$self->{_pppd_compat_ip_change}; 
+                };
+                if(defined($self->{_pppd_compat_ip_down})) {
+                   $config .= "ip-down=".$self->{_pppd_compat_ip_down}; 
+		};
+                if(defined($self->{_pppd_compat_ip_pre_up})) {
+                   $config .= "ip-pre-up=".$self->{_pppd_compat_ip_pre_up}; 
+		};
+                if(defined($self->{_pppd_compat_ip_up})) {
+                   $config .= "ip-up=".$self->{_pppd_compat_ip_up}; 
+		};
+                if(defined($self->{_pppd_compat_radattr})) {
+                   $config .= "radattr=".$self->{_pppd_compat_radattr}; 
+		};
+                if(defined($self->{_pppd_compat_verbose})) {
+                   $config .= "verbose=".$self->{_pppd_compat_verbose}; 
+		};
+
+        };
 
 	if (defined($self->{_shaper}) and ( not(defined($self->{_shaper_enabled}) or $self->{_shaper_enabled} eq 'true') )) {
 		return (undef, "Must specify upstream rate limiting method.")

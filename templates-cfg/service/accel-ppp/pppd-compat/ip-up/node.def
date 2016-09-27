@@ -1,0 +1,4 @@
+type: txt
+help: Path to ip-up script which is executed when ppp interface is completly configured and started.
+syntax:expression: exec "[ -x $VAR(@) ]" ; "Script should exist and be executable by root."
+

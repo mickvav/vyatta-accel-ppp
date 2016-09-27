@@ -1,3 +1,9 @@
+vyatta-accel-ppp (1.0.2) unstable; urgency=low
+
+  * Added pppd-compat module options.
+
+ -- Mihail Vasilev <mick@corp.linkintel.ru>  Tue, 27 Sep 2016 10:55:00 +0300
+
 vyatta-accel-ppp (1.0.1) unstable; urgency=low
 
   * Make things work with VyOS and recent accel-ppp

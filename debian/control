@@ -1,7 +1,7 @@
 Source: vyatta-accel-ppp
 Section: contrib/net
 Priority: extra
-Maintainer: Cesar Fazan <cesar.fazan@gmail.com>
+Maintainer: Mihail Vasilev <mick@corp.linkintel.ru>
 Standards-Version: 3.9.1
 Build-Depends: debhelper (>= 5), autotools-dev, autoconf
 

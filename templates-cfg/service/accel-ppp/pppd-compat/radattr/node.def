@@ -1,0 +1,4 @@
+type: txt
+help: Prefix of radattr files  (for  example  /var/run/radattr, resulting files will be /var/run/radattr.pppX) 
+syntax:expression: exec "[ -d `dirname $VAR(@)` ]" ; "Containing directory should exist."
+
